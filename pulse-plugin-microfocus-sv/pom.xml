@@ -38,6 +38,12 @@
             <version>${pulse.plugin.api.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.microfocus.sv</groupId>
+            <artifactId>SVConfigurator</artifactId>
+            <version>5.4.1</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
