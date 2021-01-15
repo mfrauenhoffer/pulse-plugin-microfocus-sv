@@ -50,12 +50,15 @@ public class SvPlugin
     public PulseState doStep(final PulseChainContext context) throws PulseChainStepPluginException {
         Path pathToSVProject;
         consoleLogger.debug("Initiating SV Plugin Operation");
+        consoleLogger.debug("SV Config - Action: " + config.getStrAction());
+        consoleLogger.debug("SV Config - Search Context: " + config.getStrSearchContext());
 
         // Get an enum of the selected action from the config object
         SvAction actionSelected = SvAction.valueOf(config.getStrAction());
-
+        
         // Get an enum of the SV project search context
         SvSearchContext projectSearchContext = SvSearchContext.valueOf(config.getStrSearchContext());
+
 
         switch (projectSearchContext) {
             case HARDDISK:

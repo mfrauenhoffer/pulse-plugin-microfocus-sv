@@ -28,7 +28,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <pulse.plugin.api.version>19.1.1-SNAPSHOT</pulse.plugin.api.version>
-        <pulse.plugin.api.version.required>14.5</pulse.plugin.api.version.required>
+        <pulse.plugin.api.version.required>19.1</pulse.plugin.api.version.required>
     </properties>
 
     <dependencies>
@@ -100,10 +100,10 @@
                                     <!--
                                         Uncomment the following section if your plugin relies on other libraries.
                                     -->
-                                    <!--<mappedresources>-->
-                                    <!--<fileset refid="maven.project.dependencies"/>-->
-                                    <!--<flattenmapper/>-->
-                                    <!--</mappedresources>-->
+                                    <mappedresources>
+                                        <fileset refid="maven.project.dependencies"/>
+                                        <flattenmapper/>
+                                    </mappedresources>
                                 </zip>
                                 <attachartifact file="${plugin.file}" type="spar"/>
                             </target>
