@@ -27,14 +27,14 @@
                 "title": "Action to Take",
                 "enum":["DEPLOY", "CHANGE_MODE", "EXPORT", "UNDEPLOY"]
             },
-            "strProjectLocation":{
+            "strSearchContext":{
                 "type":"string",
-                "title":"Project Location",
+                "title":"Search Context",
                 "enum":["HARDDISK","WORKSPACE"]
             }
         },
         "required": [
-            "strServerUrl", "strProjectPath", "strProjectLocation", "strServices", "strAction" 
+            "strServerUrl", "strProjectPath", "strSearchContext", "strServices", "strAction" 
         ]
     },
     "form": [
@@ -50,7 +50,7 @@
             "type":"password"
         },
         {
-            "key":"strProjectLocation",
+            "key":"strSearchContext",
             "titleMap":{
                 "HARDDISK":"Hard Drive",
                 "WORKSPACE":"Workspace"
