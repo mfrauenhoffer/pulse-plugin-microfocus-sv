@@ -1,5 +1,7 @@
 package com.microfocus.pulse.svplugin;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import com.microfocus.adm.pulse.pluginapi.chain.annotations.ChainStepConfigProperty;
@@ -9,26 +11,32 @@ import com.microfocus.adm.pulse.pluginapi.chain.annotations.TokenisedProperty;
 
 public class PluginConfig {
 
-    @ChainStepConfigProperty(name = "SV Server Name")
+    @ChainStepConfigProperty
     public String strServerName;
 
-    @ChainStepConfigProperty(name = "SV Server URL")
+    @ChainStepConfigProperty
     public String strServerUrl;
 
-    @ChainStepConfigProperty(name = "SV Server Username")
+    @ChainStepConfigProperty
     public String strUsername;
 
-    @ChainStepConfigProperty(name = "SV Server Password")
+    @ChainStepConfigProperty
     @ObfuscatedProperty
     public String strPassword;
 
-    @ChainStepConfigProperty(name = "SV Project Path")
+    @ChainStepConfigProperty
     public String strProjectPath;
 
-    @ChainStepConfigProperty(name = "SV Services to Activate")
+    @ChainStepConfigProperty
     @MultiValueProperty(value = ",")
     @TokenisedProperty(value = false)
     public List<String> services;
+
+    @ChainStepConfigProperty
+    public String strAction;
+
+    @ChainStepConfigProperty
+    public String strSearchContext;
 
     public String getStrServerName() {
         return strServerName;
@@ -76,5 +84,25 @@ public class PluginConfig {
 
     public void setServices(List<String> services) {
         this.services = services;
+    }
+
+    public String getStrAction() {
+        return strAction;
+    }
+
+    public void setStrAction(String strAction) {
+        this.strAction = strAction;
+    }
+
+    public String getStrSearchContext() {
+        return strSearchContext;
+    }
+
+    public void setStrSearchContext(String strSearchContext) {
+        this.strSearchContext = strSearchContext;
+    }
+
+    public URL getServerUrlObject() throws MalformedURLException {
+        return new URL(strServerUrl);
     }
 }

@@ -1,0 +1,78 @@
+{
+    "schema": {
+        "type": "object",
+        "properties": {
+            "strServerUrl":{
+                "type":"string",
+                "title":"SV Server URL"
+            },
+            "strUsername":{
+                "type":"string",
+                "title":"SV Username"
+            },
+            "strPassword":{
+                "type":"string",
+                "title":"SV Password"
+            },
+            "strProjectPath":{
+                "type":"string",
+                "title":"SV Project Path"
+            },
+            "strServices":{
+                "type":"string",
+                "title":"SV Service(s)"
+            },
+            "strAction":{
+                "type":"string",
+                "title": "Action to Take",
+                "enum":["DEPLOY", "CHANGE_MODE", "EXPORT", "UNDEPLOY"]
+            },
+            "strProjectLocation":{
+                "type":"string",
+                "title":"Project Location",
+                "enum":["HARDDISK","WORKSPACE"]
+            }
+        },
+        "required": [
+            "strServerUrl", "strProjectPath", "strProjectLocation", "strServices", "strAction" 
+        ]
+    },
+    "form": [
+        {
+            "key":"strServerUrl",
+            "placeholder":"http(s)://servername:port/management"
+        },
+        {
+            "key":"strUsername"
+        },
+        {
+            "key":"strPassword",
+            "type":"password"
+        },
+        {
+            "key":"strProjectLocation",
+            "titleMap":{
+                "HARDDISK":"Hard Drive",
+                "WORKSPACE":"Workspace"
+            },
+            "description":"This field controls the context where the plugin searches for the file. If Hard Drive is selected, it assumes you've provided a full path to the project. If Workspace is selected, it will search relative to the workspace of the plugin."
+        },
+        {
+            "key":"strProjectPath",
+            "placeholder":"\\path\\to\\sv\\project.vproj"
+        },
+        {
+            "key":"strServices",
+            "placeholder":"Comma-seperated list of services to perform the operation selected on"
+        },
+        {
+            "key": "action",
+            "titleMap":{
+                "DEPLOY":"Deploy",
+                "CHANGE_MODE":"Change Mode",
+                "EXPORT": "Export",
+                "UNDEPLOY": "Undeploy"
+            }            
+        }
+    ]
+}
