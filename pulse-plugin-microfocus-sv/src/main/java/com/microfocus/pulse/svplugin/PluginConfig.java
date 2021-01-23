@@ -38,6 +38,36 @@ public class PluginConfig {
     @ChainStepConfigProperty
     public String strSearchContext;
 
+    @ChainStepConfigProperty
+    public boolean blForceAction;
+
+    @ChainStepConfigProperty
+    public String strTargetDirectory;
+
+    @ChainStepConfigProperty
+    public boolean blCleanTargetDirectory;
+
+    @ChainStepConfigProperty
+    public boolean blSwitchToStandbyFirst;
+
+    @ChainStepConfigProperty
+    public String strRuntimeMode;
+
+    @ChainStepConfigProperty
+    public String strDataModelSelectionOption;
+
+    @ChainStepConfigProperty
+    public String strDataModelName;
+
+    @ChainStepConfigProperty
+    public String strPerfModelSelectionOption;
+
+    @ChainStepConfigProperty
+    public String strPerfModelName;
+
+    @ChainStepConfigProperty
+    public boolean blActionAllServices;
+
     public String getStrServerName() {
         return strServerName;
     }
@@ -104,5 +134,85 @@ public class PluginConfig {
 
     public URL getServerUrlObject() throws MalformedURLException {
         return new URL(strServerUrl);
+    }
+
+    public boolean isBlForceAction() {
+        return blForceAction;
+    }
+
+    public void setBlForceAction(boolean blForceAction) {
+        this.blForceAction = blForceAction;
+    }
+
+    public String getStrTargetDirectory() {
+        return strTargetDirectory;
+    }
+
+    public void setStrTargetDirectory(String strTargetDirectory) {
+        this.strTargetDirectory = strTargetDirectory;
+    }
+
+    public boolean isBlCleanTargetDirectory() {
+        return blCleanTargetDirectory;
+    }
+
+    public void setBlCleanTargetDirectory(boolean blCleanTargetDirectory) {
+        this.blCleanTargetDirectory = blCleanTargetDirectory;
+    }
+
+    public boolean isBlSwitchToStandbyFirst() {
+        return blSwitchToStandbyFirst;
+    }
+
+    public void setBlSwitchToStandbyFirst(boolean blSwitchToStandbyFirst) {
+        this.blSwitchToStandbyFirst = blSwitchToStandbyFirst;
+    }
+
+    public String getStrRuntimeMode() {
+        return strRuntimeMode;
+    }
+
+    public void setStrRuntimeMode(String strRuntimeMode) {
+        this.strRuntimeMode = strRuntimeMode;
+    }
+
+    public String getStrDataModelSelectionOption() {
+        return strDataModelSelectionOption;
+    }
+
+    public void setStrDataModelSelectionOption(String strDataModelSelectionOption) {
+        this.strDataModelSelectionOption = strDataModelSelectionOption;
+    }
+
+    public String getStrDataModelName() {
+        return strDataModelName;
+    }
+
+    public void setStrDataModelName(String strDataModelName) {
+        this.strDataModelName = strDataModelName;
+    }
+
+    public String getStrPerfModelSelectionOption() {
+        return strPerfModelSelectionOption;
+    }
+
+    public void setStrPerfModelSelectionOption(String strPerfModelSelectionOption) {
+        this.strPerfModelSelectionOption = strPerfModelSelectionOption;
+    }
+
+    public String getStrPerfModelName() {
+        return strPerfModelName;
+    }
+
+    public void setStrPerfModelName(String strPerfModelName) {
+        this.strPerfModelName = strPerfModelName;
+    }
+
+    public boolean isBlActionAllServices() {
+        return blActionAllServices;
+    }
+
+    public void setBlActionAllServices(boolean blActionAllServices) {
+        this.blActionAllServices = blActionAllServices;
     }
 }

@@ -25,6 +25,9 @@ import com.microfocus.sv.svconfigurator.core.impl.processor.Credentials;
 import com.microfocus.sv.svconfigurator.processor.DeployProcessor;
 import com.microfocus.sv.svconfigurator.processor.DeployProcessorInput;
 import com.microfocus.sv.svconfigurator.processor.IDeployProcessor;
+import com.microfocus.sv.svconfigurator.processor.IUndeployProcessor;
+import com.microfocus.sv.svconfigurator.processor.UndeployProcessor;
+import com.microfocus.sv.svconfigurator.processor.UndeployProcessorInput;
 import com.microfocus.sv.svconfigurator.serverclient.ICommandExecutor;
 import com.microfocus.sv.svconfigurator.serverclient.impl.CommandExecutorFactory;
 import com.microfocus.sv.svconfigurator.build.ProjectBuilder;
@@ -53,12 +56,18 @@ public class SvPlugin
         consoleLogger.debug("SV Config - Action: " + config.getStrAction());
         consoleLogger.debug("SV Config - Search Context: " + config.getStrSearchContext());
 
+        // Log the services object
+        consoleLogger.debug("Services object size is {}", config.getServices().size());
+        consoleLogger.debug("SV Config - Services to Control:");
+        for (String service : config.getServices()) {
+            consoleLogger.debug("   Service :: {}", service);
+        }
+
         // Get an enum of the selected action from the config object
         SvAction actionSelected = SvAction.valueOf(config.getStrAction());
-        
+
         // Get an enum of the SV project search context
         SvSearchContext projectSearchContext = SvSearchContext.valueOf(config.getStrSearchContext());
-
 
         switch (projectSearchContext) {
             case HARDDISK:
@@ -78,26 +87,30 @@ public class SvPlugin
             return PulseState.COMPLETED_FAILURE;
         }
 
+        // Load the project for use
+        
+        IProject project;
+        try {
+            project = loadProject(pathToSVProject, config.getStrPassword());
+            consoleLogger.info("Successfully loaded SV Project");
+            printProjectContents(project);
+        } catch (ProjectBuilderException e1) {
+            consoleLogger.info("Error loading SV Project: '{}'", e1.getLocalizedMessage());
+            return PulseState.COMPLETED_ABORTED;
+        }
+        
         // Now that we've checked if the file exists and we have the action, let's start
         // working!
         switch (actionSelected) {
             case CHANGE_MODE:
                 break;
             case DEPLOY:
-                try {
-                    IProject project = loadProject(pathToSVProject, config.getStrPassword());
-                    consoleLogger.info("Successfully loaded SV Project");
-                    printProjectContents(project);
-                    deployServiceFromProject(project);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return PulseState.COMPLETED_ABORTED;
-                }
-
+                deployServices(project);
                 break;
             case EXPORT:
                 break;
             case UNDEPLOY:
+                undeployServices(project);
                 break;
             default:
         }
@@ -111,7 +124,7 @@ public class SvPlugin
     private void printProjectContents(IProject project) {
         consoleLogger.debug("Loaded SV Project which contains: ");
         for (IService service : project.getServices()) {
-            consoleLogger.debug("    Service: " + service.getName() + " [" + service.getId() +" ]");
+            consoleLogger.debug("    Service: " + service.getName() + " [" + service.getId() + "]");
             for (IDataModel dataModel : service.getDataModels()) {
                 consoleLogger.debug("      DM: " + dataModel.getName() + " [" + dataModel.getId() + "]");
             }
@@ -121,16 +134,76 @@ public class SvPlugin
         }
     }
 
-    private void deployServiceFromProject(IProject project) throws Exception {
+    private void undeployServices(IProject project) {
+        if (project.getServices().isEmpty()) {
+            undeployAllServicesFromProject(project);
+        } else {
+            config.getServices().forEach(serviceName -> {
+                project.getServices().forEach(service -> {
+                    if (service.getName().equals(serviceName)) {
+                        try {
+                            undeployService(service);
+                        } catch (Exception e) {
+                            consoleLogger.info("Error undeploying service: '{}'", e.getLocalizedMessage());
+                        }
+                    }
+                });
+            });
+        }
+    }
+    private void deployServices(IProject project) {
+        if (project.getServices().isEmpty()) {
+            deployAllServicesFromProject(project);
+        } else {
+            config.getServices().forEach(serviceName -> {
+                project.getServices().forEach(service -> {
+                    if (service.getName().equals(serviceName)) {
+                        try {
+                            deployService(project, service);
+                        } catch (Exception e) {
+                            consoleLogger.debug(e.getLocalizedMessage());
+                        }
+                    }
+                });
+            });
+        }
+    }
+
+    private void deployAllServicesFromProject(IProject project) {
+        try {
+            for (IService service : project.getServices()) {
+                deployService(project, service);
+            }
+        } catch (Exception e) {
+            consoleLogger.debug("Exception deploying services from the project: {}", e.getLocalizedMessage());
+        }
+    }
+
+    private void undeployAllServicesFromProject(IProject project) {
+        try {
+            for (IService service : project.getServices()) {
+                undeployService(service);
+            }
+        } catch (Exception e) {
+            consoleLogger.debug("Exception undeploying services from the project: {}", e.getLocalizedMessage());
+        }
+    }
+
+    private void deployService(IProject project, IService service) throws Exception {
         IDeployProcessor processor = new DeployProcessor(null);
         ICommandExecutor commandExecutor = createCommandExecutor();
+        consoleLogger.info("  Deploying service '{}' -  {}", service.getName(), service.getId());
+        DeployProcessorInput deployInput = new DeployProcessorInput(false, false, project, service.getId(), null, false);
+        deployInput.setFirstAgentFailover(false);
+        processor.process(deployInput, commandExecutor);
+    }
 
-        for (IService service : project.getServices()) {
-            consoleLogger.info("  Deploying service '%s' [%s] %n", service.getName(), service.getId());
-            DeployProcessorInput deployInput = new DeployProcessorInput(false, false, project, service.getId(), null, false);
-            deployInput.setFirstAgentFailover(false);
-            processor.process(deployInput, commandExecutor);
-        }
+    private void undeployService(IService service) throws Exception {
+        IUndeployProcessor processor = new UndeployProcessor(null);
+        ICommandExecutor exec = createCommandExecutor();
+        consoleLogger.info("  Undeploying service '{}' - {}", service.getName(), service.getId());
+        UndeployProcessorInput undeployInput = new UndeployProcessorInput(false, null, service.getId());
+        processor.process(undeployInput, exec);
     }
 
     private ICommandExecutor createCommandExecutor() throws Exception {

@@ -18,7 +18,7 @@
                 "type":"string",
                 "title":"SV Project Path"
             },
-            "strServices":{
+            "services":{
                 "type":"string",
                 "title":"SV Service(s)"
             },
@@ -31,6 +31,45 @@
                 "type":"string",
                 "title":"Search Context",
                 "enum":["HARDDISK","WORKSPACE"]
+            },
+            "blForceAction":{
+                "type":"boolean",
+                "title":"Force Action If Locked?"
+            },
+            "strTargetDirectory":{
+                "type":"string",
+                "title":"Export Target Directory"
+            },
+            "blCleanTargetDirectory":{
+                "type":"boolean",
+                "title":"Clean Target Directory"
+            },
+            "blSwitchToStandbyFirst":{
+                "type":"boolean",
+                "title":"Switch Service to Standby First"
+            },
+            "strRuntimeMode":{
+                "type":"string",
+                "enum":["OFFLINE","SIMULATING","STAND_BY","LEARNING"],
+                "title":"Target Service Runtime Mode"
+            },
+            "strDataModelSelectionOption":{
+                "type":"string",
+                "enum":["NONE","BY_NAME","OFFLINE","DEFAULT"],
+                "title":"Data Model"
+            },
+            "strDataModelName":{
+                "type":"string",
+                "title":"Name or ID of Data Model"
+            },
+            "strPerfModelSelectionOption":{
+                "type":"string",
+                "enum":["NONE","BY_NAME","OFFLINE","DEFAULT"],
+                "title":"Performance Model"
+            },
+            "strPerfModelName":{
+                "type":"string",
+                "title":"Name or ID of Performance Model"
             }
         },
         "required": [
@@ -50,22 +89,6 @@
             "type":"password"
         },
         {
-            "key":"strSearchContext",
-            "titleMap":{
-                "HARDDISK":"Hard Drive",
-                "WORKSPACE":"Workspace"
-            },
-            "description":"This field controls the context where the plugin searches for the file. If Hard Drive is selected, it assumes you've provided a full path to the project. If Workspace is selected, it will search relative to the workspace of the plugin."
-        },
-        {
-            "key":"strProjectPath",
-            "placeholder":"\\path\\to\\sv\\project.vproj"
-        },
-        {
-            "key":"strServices",
-            "placeholder":"Comma-seperated list of services to perform the operation selected on"
-        },
-        {
             "key": "strAction",
             "titleMap":{
                 "DEPLOY":"Deploy",
@@ -73,6 +96,129 @@
                 "EXPORT": "Export",
                 "UNDEPLOY": "Undeploy"
             }            
+        },
+        {
+            "type":"fieldset",
+            "description":"Action Properties",
+            "items":[
+                {
+                    "key":"serviceSelectionProperties",
+                    "type":"fieldset",
+                    "items":[
+                        {
+                            "key":"serviceSelection",
+                            "name":"Service Selection",
+                            "type":"radios",
+                            "titleMap":[
+                                {
+                                    "value":"SELECTED_SERVICE",
+                                    "name":"Selected Service Only"
+                                },
+                                {
+                                    "value":"ALL_SERVICES_IN_PROJECT",
+                                    "name":"All Services In Project"
+                                },
+                                {
+                                    "value":"ALL_DEPLOYED_SERVICES",
+                                    "name":"All Currently Deployed Services"
+                                }
+                            ]
+                        },
+                        {
+                            "key":"services",
+                            "title":"Service Name or ID",
+                            "condition":"model.serviceSelection == \"SELECTED_SERVICE\""
+                        },
+                        {
+                            "key":"strSearchContext",
+                            "titleMap":{
+                                "HARDDISK":"Hard Drive",
+                                "WORKSPACE":"Workspace"
+                            },
+                            "description":"This field controls the context where the plugin searches for the file. If Hard Drive is selected, it assumes you've provided a full path to the project. If Workspace is selected, it will search relative to the workspace of the plugin.",
+                            "condition":"model.serviceSelection == \"ALL_SERVICES_IN_PROJECT\""
+                        },
+                        {
+                            "key":"strProjectPath",
+                            "placeholder":"\\path\\to\\sv\\project.vproj",
+                            "condition":"model.serviceSelection == \"ALL_SERVICES_IN_PROJECT\""
+                        }
+                    ]
+                }
+            ],
+            "condition":"model.strAction == \"DEPLOY\" || model.strAction == \"CHANGE_MODE\""
+        },
+        {
+            "key":"changeModeProperties",
+            "type":"fieldset",
+            "items":[
+                {
+                    "key":"strRuntimeMode",
+                    "titleMap":[
+                        {
+                            "value":"OFFLINE",
+                            "name":"Offline"
+                        },
+                        {
+                            "value":"SIMULATING",
+                            "name":"Simulating"
+                        },
+                        {
+                            "value":"STAND_BY",
+                            "name":"Stand By"
+                        },
+                        {
+                            "value":"LEARNING",
+                            "name":"Learning"
+                        }
+                    ],
+                    "description":"Select the mode that the services specified above should be placed in."
+                },
+                {
+                    "key":"strDataModelSelectionOption",
+                    "titleMap":[
+                        {
+                            "value":"BY_NAME",
+                            "name":"By Name or ID"
+                        },
+                        {
+                            "value":"NONE",
+                            "name":"None"
+                        },
+                        {
+                            "value":"OFFLINE",
+                            "name":"Offline"
+                        },
+                        {
+                            "value":"DEFAULT",
+                            "name":"Default"
+                        }
+                    ]
+                },
+                {
+                    "key":"strPerfModelSelectionOption",
+                    "titleMap":[
+                        {
+                            "value":"BY_NAME",
+                            "name":"By Name or ID"
+                        },
+                        {
+                            "value":"NONE",
+                            "name":"None"
+                        },
+                        {
+                            "value":"OFFLINE",
+                            "name":"Offline"
+                        },
+                        {
+                            "value":"DEFAULT",
+                            "name":"Default"
+                        }
+                    ],
+                    "description":"Select the performance model you wish to associate with the service"
+                }
+            ],
+            "condition":"model.strAction == \"CHANGE_MODE\""
         }
     ]
 }
