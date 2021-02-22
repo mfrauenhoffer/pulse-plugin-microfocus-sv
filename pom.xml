@@ -31,6 +31,13 @@
         <pulse.plugin.api.version.required>19.1</pulse.plugin.api.version.required>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>bintray-adm-maven</id>
+            <name>adm-maven</name>
+            <url>https://dl.bintray.com/adm/maven</url>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>com.microfocus.adm.pulse</groupId>

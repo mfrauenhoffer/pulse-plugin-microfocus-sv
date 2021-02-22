@@ -136,12 +136,12 @@
                                 "WORKSPACE":"Workspace"
                             },
                             "description":"This field controls the context where the plugin searches for the file. If Hard Drive is selected, it assumes you've provided a full path to the project. If Workspace is selected, it will search relative to the workspace of the plugin.",
-                            "condition":"model.serviceSelection == \"ALL_SERVICES_IN_PROJECT\""
+                            "condition":"model.serviceSelection == \"ALL_SERVICES_IN_PROJECT\" || model.serviceSelection == \"SELECTED_SERVICE\""
                         },
                         {
                             "key":"strProjectPath",
                             "placeholder":"\\path\\to\\sv\\project.vproj",
-                            "condition":"model.serviceSelection == \"ALL_SERVICES_IN_PROJECT\""
+                            "condition":"model.serviceSelection == \"ALL_SERVICES_IN_PROJECT\" || model.serviceSelection == \"SELECTED_SERVICE\""
                         }
                     ]
                 }
